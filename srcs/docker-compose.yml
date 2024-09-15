@@ -1,0 +1,68 @@
+version: "3.5"
+
+#network: used by the containers to communicate
+networks:
+    inception_network:
+        name: inception_network
+        driver: bridge
+
+#volumes: persistent data stores
+# mariadb -> stores my wordpress database
+# wordpress -> stores my wordpress website files
+volumes:
+    mariadb:
+        driver: local
+        driver_opts:
+            device: /home/nuferron/data/mysql
+            o: bind
+            type: none
+    wordpress:
+        driver: local
+        driver_opts:
+            device: /home/nuferron/data/wordpress
+            o: bind
+            type: none
+
+#services: defines how to run and manage a grup of containers
+# mariadb -> manage databases
+# wordpress ->
+# nginx -> a web server
+services:
+    mariadb:
+        container_name: mariadb
+        build: ./requirements/mariadb/
+        image: mariadb
+        env_file:
+            - .env
+        networks:
+            - inception_network
+        volumes:
+            - mariadb:/var/lib/mysql
+        restart: always
+
+    nginx:
+        container_name: nginx
+        build: ./requirements/nginx/
+        image: nginx
+        networks:
+            - inception_network
+        ports:
+            - "443:443"
+        volumes:
+            - wordpress:/var/www/html
+        restart: always
+
+    wordpress:
+        container_name: wordpress
+        build: ./requirements/wordpress/
+        image: wordpress
+        depends_on:
+            - mariadb
+        volumes:
+            - wordpress:/var/www/html
+        env_file:
+            - .env
+        networks:
+            - inception_network
+        restart: always
+
