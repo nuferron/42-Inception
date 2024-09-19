@@ -23,4 +23,3 @@ EXPOSE 9000
 WORKDIR /var/www/html/
 
 ENTRYPOINT [ "/usr/local/bin/wp.sh" ]
-

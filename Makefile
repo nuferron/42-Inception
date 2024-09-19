@@ -30,12 +30,19 @@ clean:
 ps:
 	docker-compose -f ./srcs/docker-compose.yml ps
 
+logs:
+	docker logs mariadb
+	docker logs wordpress
+	docker logs nginx
+
+mary:
+	docker exec -it mariadb mysql -u root -p
+
 fclean: down clean
 	docker stop ${D_PS} || true
 	docker rm ${D_PS} || true
 	docker rmi ${D_IMG} || true
 	docker system prune -af --volumes || true
-	docker volume rm srcs_wordpress || true
 	docker volume rm srcs_nginx || true
 	docker volume rm srcs_mariadb || true
 
