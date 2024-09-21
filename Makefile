@@ -3,13 +3,10 @@
 
 #-d detach -> run containers in the background
 
-D_PS = docker ps -aq
-D_IMG = docker images -q
+D_PS = $(docker ps -aq)
+D_IMG = $(docker images -q)
 
-all: down up
-
-build:
-	docker-compose -f ./srcs/docker-compose.yml build --no-cache
+all: up
 
 #up -> pulls base image, builds image, starts services
 up:
@@ -26,6 +23,8 @@ down:
 #rm -> removes stopped service containers
 clean:
 	docker-compose -f ./srcs/docker-compose.yml rm
+	rm -rf /home/nuferron/data/mysql/*
+	rm -rf /home/nuferron/data/wordpress/*
 
 ps:
 	docker-compose -f ./srcs/docker-compose.yml ps
@@ -43,7 +42,7 @@ fclean: down clean
 	docker rm ${D_PS} || true
 	docker rmi ${D_IMG} || true
 	docker system prune -af --volumes || true
-	docker volume rm srcs_nginx || true
+	docker volume rm srcs_wordpress || true
 	docker volume rm srcs_mariadb || true
 
 re: fclean all
