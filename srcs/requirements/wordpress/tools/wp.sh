@@ -31,7 +31,7 @@ else
 
     # Create an additional user
     wp user create "$WP_USR" "$WP_EMAIL" \
-        --role=author \
+        --role=contributor \
         --user_pass="$WP_PWD" \
         --allow-root
 
