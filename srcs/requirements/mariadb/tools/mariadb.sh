@@ -3,6 +3,15 @@
 mkdir -p /run/mysqld
 chown mysql:mysql /run/mysqld
 
+if [ ! -d /var/lib/mysql/${MYSQL_DATABASE} ];
+then
+	echo "Initializing the database.."
+	mysql_install_db --user=mysql --ldata=/var/lib/mysql
+fi
+
+mysqld_safe --datadir='/var/lib/mysql' &
+sleep 5
+
 if [ ! -d /var/lib/mysql/${MYSQL_DB} ];
 then
 	mysql -u ${MYSQL_ROOT} -p${MYSQL_ROOT_PWD} -e "CREATE DATABASE ${MYSQL_DB};"
